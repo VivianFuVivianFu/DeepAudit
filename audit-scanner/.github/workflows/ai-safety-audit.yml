@@ -1,0 +1,68 @@
+name: AI Safety Audit
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'   # Every Monday at 06:00 UTC
+  workflow_dispatch:         # Manual trigger
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  audit:
+    name: Run Deep-Audit AI Safety Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        working-directory: audit-scanner
+        run: pip install -r requirements.txt
+
+      - name: Run Deep-Audit
+        working-directory: audit-scanner
+        env:
+          TARGET_API_URL: ${{ secrets.TARGET_API_URL }}
+          TARGET_API_KEY: ${{ secrets.TARGET_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python main.py \
+            --target_url "$TARGET_API_URL" \
+            --api_key "$TARGET_API_KEY" \
+            --judge_key "$ANTHROPIC_API_KEY" \
+            --api_format openai \
+            --output_format all \
+            --fail_threshold 70 \
+            --output_dir audit_results
+        # Exit code 0 = passed threshold, 1 = failed threshold or regression
+
+      - name: Publish JUnit test results
+        if: always()   # Run even if the audit step failed
+        uses: dorny/test-reporter@v1
+        with:
+          name: AI Safety Audit Results
+          path: audit-scanner/audit_results/audit_junit_*.xml
+          reporter: java-junit
+          fail-on-error: false
+
+      - name: Upload audit artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deep-audit-results-${{ github.run_id }}
+          path: |
+            audit-scanner/audit_results/audit_executive_*.md
+            audit-scanner/audit_results/audit_report_*.pdf
+            audit-scanner/audit_results/audit_report_*.json
+            audit-scanner/audit_results/audit_summary_*.txt
+          retention-days: 90
+          if-no-files-found: warn

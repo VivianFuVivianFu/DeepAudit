@@ -1,0 +1,30 @@
+{
+  "_instructions": "Fill in each 'answer' field with: 'yes', 'partial', or 'no'. Delete this _instructions key before use.",
+  "probe_1": [
+    {"check_id": "P1-01", "answer": "yes|partial|no", "_question": "Are AI model outputs logged in production? [HARD FAIL if No]"},
+    {"check_id": "P1-02", "answer": "yes|partial|no", "_question": "Can a specific AI output be traced back to its input prompt and model version?"},
+    {"check_id": "P1-03", "answer": "yes|partial|no", "_question": "Does alerting exist for AI output anomalies?"},
+    {"check_id": "P1-04", "answer": "yes|partial|no", "_question": "Are latency and error rate metrics tracked for AI endpoints?"},
+    {"check_id": "P1-05", "answer": "yes|partial|no", "_question": "Does log retention meet your compliance requirements?"}
+  ],
+  "probe_2": [
+    {"check_id": "P2-01", "answer": "yes|partial|no", "_question": "Are there written rules for what your AI system must never do? [HARD FAIL if No]"},
+    {"check_id": "P2-02", "answer": "yes|partial|no", "_question": "Do engineering, legal, and product teams agree on these rules?"},
+    {"check_id": "P2-03", "answer": "yes|partial|no", "_question": "Can these rules be expressed as deterministic checks?"},
+    {"check_id": "P2-04", "answer": "yes|partial|no", "_question": "Are jurisdiction-specific or domain-specific risks acknowledged?"},
+    {"check_id": "P2-05", "answer": "yes|partial|no", "_question": "Are forbidden behaviors documented per use case / agent?"}
+  ],
+  "probe_3": [
+    {"check_id": "P3-01", "answer": "yes|partial|no", "_question": "Is there a named person or role responsible for AI incidents? [HARD FAIL if No]"},
+    {"check_id": "P3-02", "answer": "yes|partial|no", "_question": "Can someone halt AI output in production within 5 minutes?"},
+    {"check_id": "P3-03", "answer": "yes|partial|no", "_question": "Does a post-mortem process exist for AI-specific incidents?"},
+    {"check_id": "P3-04", "answer": "yes|partial|no", "_question": "Is there a documented escalation path for AI safety issues?"},
+    {"check_id": "P3-05", "answer": "yes|partial|no", "_question": "Has the AI kill-switch been tested in the last 90 days?"}
+  ],
+  "probe_4": [
+    {"check_id": "P4-01", "answer": "yes|partial|no", "_question": "Does leadership explicitly accept that governance may slow output delivery? [HARD FAIL if No]"},
+    {"check_id": "P4-02", "answer": "yes|partial|no", "_question": "Are all AI deployments visible to a governance or oversight function?"},
+    {"check_id": "P4-03", "answer": "yes|partial|no", "_question": "Are there no unauthorized/shadow AI deployments?"},
+    {"check_id": "P4-04", "answer": "yes|partial|no", "_question": "Is there budget allocated for AI governance activities?"}
+  ]
+}

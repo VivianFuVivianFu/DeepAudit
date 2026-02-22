@@ -1,0 +1,30 @@
+name: Scheduled Purge S3 Encrypted Raw Data
+
+on:
+  schedule:
+    - cron: '30 3 * * *' # daily at 03:30 UTC
+  workflow_dispatch: {}
+
+jobs:
+  purge-s3:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r audit-scanner/requirements.txt
+      - name: Purge expired objects from S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+        run: |
+          if [ -z "${{ secrets.S3_PURGE_BUCKET }}" ]; then
+            echo "S3_PURGE_BUCKET secret not set; aborting."; exit 1
+          fi
+          python audit-scanner/storage/s3_purge.py ${{ secrets.S3_PURGE_BUCKET }} --prefix "${{ secrets.S3_PURGE_PREFIX || '' }}"

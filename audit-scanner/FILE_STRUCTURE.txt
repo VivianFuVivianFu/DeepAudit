@@ -1,0 +1,249 @@
+Deep-Audit Project Structure
+================================================================================
+
+audit-scanner/
+│
+├── 🐍 CORE PYTHON MODULES (4 files)
+│   ├── attacks.py              8.8 KB    Attack case library (16 cases)
+│   ├── judge.py                7.5 KB    LLM-based security evaluator
+│   ├── utils.py                9.8 KB    Rate limiter, API client, aggregation
+│   └── main.py                 9.2 KB    Main orchestration & CLI
+│
+├── 🔧 UTILITY SCRIPTS (2 files)
+│   ├── demo.py                 7.2 KB    Interactive demo (no API required)
+│   └── validate.py             6.1 KB    Project structure validator
+│
+├── 📚 DOCUMENTATION (5 files)
+│   ├── README.md               7.0 KB    Complete project overview
+│   ├── QUICKSTART.md           5.0 KB    5-minute setup guide
+│   ├── ARCHITECTURE.md        11.7 KB    Technical architecture deep-dive
+│   ├── PROJECT_INDEX.md       11.4 KB    Complete reference guide
+│   └── SUMMARY.md              9.2 KB    Project summary & deliverables
+│
+├── ⚙️  CONFIGURATION (2 files)
+│   ├── .env.example            1.2 KB    Configuration template
+│   └── requirements.txt          35 B    Python dependencies
+│
+└── 📊 OUTPUT (generated at runtime)
+    └── audit_results/
+        ├── audit_raw_TIMESTAMP.json        Full test data
+        ├── audit_report_TIMESTAMP.json     Aggregated findings
+        └── audit_summary_TIMESTAMP.txt     Executive summary
+
+================================================================================
+TOTAL: 13 project files, ~85 KB
+================================================================================
+
+FILE PURPOSES
+================================================================================
+
+🐍 CORE MODULES
+───────────────
+attacks.py
+    - Defines AttackCase dataclass
+    - 16 pre-built attack cases across 4 categories:
+      • Injection (4): role confusion, instruction override, prompt extraction
+      • Hallucination (4): fake features, false policies, fabricated data
+      • PII Leak (4): email, phone, address extraction
+      • Action Abuse (4): unauthorized refunds, deletions, modifications
+    - Helper functions: get_all_attack_cases(), get_attacks_by_category()
+
+judge.py
+    - Judge class wrapping Claude Sonnet 4.5
+    - evaluate_failure() method for security evaluation
+    - Conservative rule-based evaluation logic
+    - Returns structured evaluation: failed, severity, evidence, rationale
+
+utils.py
+    - RateLimiter: Token bucket rate limiting (default 5 QPS)
+    - APIClient: HTTP client for target AI systems
+    - aggregate_results(): Roll up findings by category/severity
+    - format_report_summary(): Human-readable text output
+
+main.py
+    - AuditScanner class: Main orchestration
+    - CLI interface with argparse
+    - Executes attacks with repetitions (default: 3)
+    - Generates 3 output files (raw, report, summary)
+    - Exit codes: 0 (success), 1 (critical failures), 130 (interrupted)
+
+🔧 UTILITIES
+────────────
+demo.py
+    - Interactive demonstration without live API
+    - Shows all attack cases
+    - Demonstrates judge evaluation (requires ANTHROPIC_API_KEY)
+    - Example report structure
+    - Run: python demo.py
+
+validate.py
+    - Project structure validator
+    - Checks all files present
+    - Validates Python syntax
+    - Verifies attack cases loaded
+    - Checks documentation completeness
+    - Run: python validate.py
+
+📚 DOCUMENTATION
+────────────────
+README.md
+    - Complete project overview
+    - Installation & usage instructions
+    - Attack category descriptions
+    - Output format documentation
+    - Troubleshooting guide
+    - READ FIRST
+
+QUICKSTART.md
+    - 5-minute setup guide
+    - Example output
+    - Understanding results
+    - Command-line options
+    - Testing instructions
+    - BEST FOR NEW USERS
+
+ARCHITECTURE.md
+    - Technical architecture
+    - Component design
+    - Data flow diagrams
+    - Report structure
+    - Extensibility guide
+    - Performance characteristics
+    - BEST FOR DEVELOPERS
+
+PROJECT_INDEX.md
+    - Complete reference guide
+    - Quick reference commands
+    - Attack case catalog
+    - Configuration reference
+    - Development guide
+    - Troubleshooting checklists
+    - BEST FOR REFERENCE
+
+SUMMARY.md
+    - Project deliverables
+    - Validation results
+    - Success criteria
+    - Next steps for deployment
+    - Project statistics
+    - BEST FOR EXECUTIVES
+
+⚙️  CONFIGURATION
+────────────────
+.env.example
+    - Configuration template
+    - Required variables:
+      • TARGET_API_URL: Target AI system URL
+      • ANTHROPIC_API_KEY: Claude API key for judge
+    - Optional variables:
+      • TARGET_API_KEY: Target system auth (if required)
+      • MAX_QPS: Rate limit (default: 5)
+      • REPETITIONS: Attack repetitions (default: 3)
+    - Copy to .env and edit
+
+requirements.txt
+    - Python package dependencies:
+      • anthropic>=0.18.0
+      • requests>=2.31.0
+    - Install: pip install -r requirements.txt
+
+================================================================================
+
+QUICK START COMMANDS
+================================================================================
+
+# Setup
+pip install -r requirements.txt
+cp .env.example .env
+# Edit .env with your configuration
+
+# Validate project
+python validate.py
+
+# Run demo (optional)
+python demo.py
+
+# Run audit
+python main.py --target_url https://your-api.com/chat
+
+# View results
+cat audit_results/audit_summary_*.txt
+
+================================================================================
+
+WORKFLOW
+================================================================================
+
+1. SETUP
+   └─> Install dependencies
+   └─> Configure .env file
+   └─> Validate project structure
+
+2. TEST
+   └─> Run demo.py to understand components
+   └─> Test against staging environment
+   └─> Review sample output
+
+3. AUDIT
+   └─> Run main.py against target system
+   └─> Monitor progress (verbose mode)
+   └─> Wait for completion (2-5 minutes)
+
+4. ANALYZE
+   └─> Review audit_summary_*.txt for overview
+   └─> Check audit_report_*.json for metrics
+   └─> Examine audit_raw_*.json for evidence
+
+5. REMEDIATE
+   └─> Prioritize by severity (5=critical, 1=low)
+   └─> Focus on consistent failures first
+   └─> Implement fixes
+   └─> Re-run audit to verify
+
+================================================================================
+
+ATTACK REFERENCE
+================================================================================
+
+INJECTION (INJ-001 to INJ-004) - Severity: 4-5
+    INJ-001  Role confusion via authority escalation
+    INJ-002  Instruction override via priority claim
+    INJ-003  System prompt extraction
+    INJ-004  Delimiter injection to escape context
+
+HALLUCINATION (HAL-001 to HAL-004) - Severity: 3-4
+    HAL-001  Fake product feature confirmation
+    HAL-002  Non-existent policy fabrication
+    HAL-003  Fabricated internal reference
+    HAL-004  False partnership claim
+
+PII LEAKAGE (PII-001 to PII-004) - Severity: 4-5
+    PII-001  Email extraction via social engineering
+    PII-002  Phone number enumeration
+    PII-003  Address disclosure via delivery inquiry
+    PII-004  Inferred personal data via order history
+
+ACTION ABUSE (ACT-001 to ACT-004) - Severity: 4-5
+    ACT-001  Unauthorized refund processing
+    ACT-002  Policy bypass via urgency claim
+    ACT-003  Destructive account action without verification
+    ACT-004  Unauthorized account modification
+
+================================================================================
+
+PROJECT STATUS
+================================================================================
+
+✅ All 13 files created and validated
+✅ 16 attack cases implemented
+✅ Judge evaluation logic complete
+✅ Rate limiting implemented
+✅ Documentation comprehensive
+✅ Validation passing (5/5 checks)
+✅ Ready for production deployment
+
+Version: 1.0.0
+Created: 2025-12-12
+Status: PRODUCTION READY
+
+================================================================================
