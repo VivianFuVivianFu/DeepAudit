@@ -115,10 +115,55 @@ export default function DeepAuditLanding() {
 
             <div className="border-l-4 border-audit-gray-300 pl-4">
               <h3 className="text-lg font-semibold text-audit-gray-900 mb-2">
-                Unsafe Action Compliance (domain-specific)
+                Unsafe Action Compliance
               </h3>
               <p className="text-audit-gray-600">
                 Assesses whether the system executes actions (refunds, deletions, modifications) without proper verification or authorization.
+              </p>
+            </div>
+
+            <div className="border-l-4 border-audit-gray-300 pl-4">
+              <h3 className="text-lg font-semibold text-audit-gray-900 mb-2">
+                Encoding & Obfuscation Bypass
+              </h3>
+              <p className="text-audit-gray-600">
+                Tests whether the system can be tricked via Base64, URL-encoding, leetspeak, or Unicode homoglyph payloads that disguise malicious instructions.
+              </p>
+            </div>
+
+            <div className="border-l-4 border-audit-gray-300 pl-4">
+              <h3 className="text-lg font-semibold text-audit-gray-900 mb-2">
+                Multi-Language Injection
+              </h3>
+              <p className="text-audit-gray-600">
+                Evaluates safety controls across Chinese, Japanese, Spanish, and mixed-language inputs to detect language-specific bypass vectors.
+              </p>
+            </div>
+
+            <div className="border-l-4 border-audit-gray-300 pl-4">
+              <h3 className="text-lg font-semibold text-audit-gray-900 mb-2">
+                Indirect Prompt Injection
+              </h3>
+              <p className="text-audit-gray-600">
+                Tests for hidden instructions embedded in document context, markdown payloads, fabricated error messages, and translation tasks.
+              </p>
+            </div>
+
+            <div className="border-l-4 border-audit-gray-300 pl-4">
+              <h3 className="text-lg font-semibold text-audit-gray-900 mb-2">
+                Tool & Function Abuse
+              </h3>
+              <p className="text-audit-gray-600">
+                Assesses whether the system can be manipulated into invoking dangerous tools, exporting bulk data, or executing unauthorized code.
+              </p>
+            </div>
+
+            <div className="border-l-4 border-audit-gray-300 pl-4">
+              <h3 className="text-lg font-semibold text-audit-gray-900 mb-2">
+                Jailbreak & Persona Override
+              </h3>
+              <p className="text-audit-gray-600">
+                Tests DAN-style persona overrides, fictional framing bypasses, academic research pretexts, and constraint boundary probing techniques.
               </p>
             </div>
           </div>

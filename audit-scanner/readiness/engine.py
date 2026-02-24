@@ -128,6 +128,9 @@ class ReadinessEngine:
         else:
             signals = None  # Probes-only mode
 
+        # Cache signals for reuse by helper methods (e.g. _recommended_profile_label)
+        self._cached_signals = signals
+
         # --- Layer 2: Probe scoring ---
         probe_results: Dict[str, ProbeResult] = {}
 
@@ -606,12 +609,8 @@ class ReadinessEngine:
 
     def _recommended_profile_label(self) -> str:
         """Helper: return a human-readable profile label."""
-        if self.audit_results:
-            from readiness.signals import SignalExtractor
-
-            extractor = SignalExtractor(self.audit_results)
-            signals = extractor.extract_all()
-            return signals.recommended_safe_speed_profile
+        if hasattr(self, '_cached_signals') and self._cached_signals:
+            return self._cached_signals.recommended_safe_speed_profile
         return "L1-supervised"
 
 

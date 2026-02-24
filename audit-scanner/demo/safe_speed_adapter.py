@@ -84,12 +84,12 @@ def evaluate_with_safespeed(user_input: str, model_output: str, category: str) -
 
         if response.status_code != 200:
             print(f"Warning: drift-gateway returned {response.status_code}")
-            # Fail safe - return original output if gateway unavailable
+            # Fail closed - block output when gateway returns error
             return {
-                "safe": True,
-                "output": model_output,
-                "reasoning": "Gateway unavailable - passthrough",
-                "blocked": False,
+                "safe": False,
+                "output": "Service temporarily unavailable. Please try again later.",
+                "reasoning": f"Gateway returned non-200 status: {response.status_code}",
+                "blocked": True,
             }
 
         result = response.json()
